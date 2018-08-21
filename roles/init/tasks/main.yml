@@ -1,0 +1,105 @@
+#- name: show mentotal
+#  debug: var=ansible_memtotal_mb
+#- name: show vcpus
+#  debug: var=ansible_processor_vcpus
+# name: show xvda
+#  debug: var=ansible_devices.xvda.size
+# name: show xvde
+#  debug: var=ansible_devices.xvde.size
+
+- name: check if rsa
+  stat: path=/root/.ssh/{{ item.src }} 
+  with_items:
+    - { src: id_rsa.pub }
+    - { src: id_rsa }
+  register: rsa
+  delegate_to: localhost
+  ignore_errors: True
+
+- name: create rsa
+  shell: yes y |ssh-keygen -b 2048 -t rsa -f /root/.ssh/id_rsa -q -N ""
+  delegate_to: localhost
+  when: (rsa.results[0].stat.exists == false) or (rsa.results[1].stat.exists == false)
+
+- name: install ssh key
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+- name: copy id_rsa.pub
+  copy: src=/root/.ssh/id_rsa.pub dest=/root/.ssh/id_rsa.pub mode=0644
+
+- name: copy id_rsa
+  copy: src=/root/.ssh/id_rsa dest=/root/.ssh/id_rsa mode=0600
+
+- name: create known_hosts
+  copy: src=/root/.ssh/known_hosts dest=/root/.ssh/known_hosts mode=0600
+
+- name: UnMount up device by label
+  mount:
+    path: /var/lib/docker
+    src: /dev/{{ devicename }}
+    fstype: ext4
+    state: unmounted
+  ignore_errors: yes
+
+- name: Create a ext4 filesystem on /dev/
+  filesystem:
+    fstype: ext4
+    dev: /dev/{{ devicename }}
+    force: yes
+
+- name: Mount up device by label
+  mount:
+    path: /var/lib/docker
+    src: /dev/{{ devicename }}
+    fstype: ext4
+    state: mounted
+
+- name: change hostname
+  shell: hostnamectl set-hostname {{hostname|quote}}
+
+- name: change hosts
+  shell: sed -i "s,`cat /etc/hosts |grep {{ ansible_default_ipv4.address }}  |awk '{print $2}'`,{{ hostname|quote }},g" /etc/hosts
+
+#- name: set selinux
+#  shell: setenforce 0
+#  ignore_errors: yes
+
+#manual stop selinux
+#- name: disable selinux
+#  lineinfile:
+#    dest: /etc/selinux/config
+#    regexp: "^SELINUX="
+#    line: "SELINUX=disabled"
+
+#- name: stop firewalld
+#  shell: systemctl stop firewalld && systemctl disable firewalld
+- name: "stop firewalld"
+  systemd:
+    state: stopped
+    daemon_reload: yes
+    name: firewalld
+    enabled: no
+  when: ansible_os_family == 'RedHat'
+
+- name: "stop SuSEfirewall2"
+  systemd:
+    state: stopped
+    daemon_reload: yes
+    name: SuSEfirewall2
+    enabled: no
+  when: ansible_os_family == 'Suse'
+
+- name: clear iptables
+  shell: iptables -F
+
+- name: set swap
+  shell: swapoff -a
+
+- name: set sysctl
+  copy: src=95-k8s-sysctl.conf dest=/etc/sysctl.d/95-k8s-sysctl.conf
+
+- name: apply sysctl
+  shell: "sysctl -p /etc/sysctl.d/95-k8s-sysctl.conf"

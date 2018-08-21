@@ -1,0 +1,7 @@
+- name: set ssh-file
+  hosts:
+    - nodes
+    - masters
+  gather_facts: yes
+  roles:
+    - init
