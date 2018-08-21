@@ -1,7 +1,6 @@
 - name: set ssh-file
   hosts:
-    - nodes
-    - masters
+    - all
   gather_facts: yes
   roles:
     - init
