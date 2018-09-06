@@ -1,0 +1,8 @@
+---
+
+- name: "install systemd on ubuntu"
+  apt:
+    name: systemd
+    state: present
+  become: true
+  become_method: sudo

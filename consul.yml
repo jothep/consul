@@ -1,0 +1,7 @@
+- name: install consul
+  hosts:
+    - consul_boot
+    - consul_server
+  gather_facts: yes
+  roles:
+    - consul

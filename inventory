@@ -1,2 +1,16 @@
-[init]
+[systemd]
+node1 ansible_ssh_host="192.168.15.11"
+node2 ansible_ssh_host="192.168.15.12" 
+node3 ansible_ssh_host="192.168.15.13" 
+node4 ansible_ssh_host="192.168.15.14"
+node5 ansible_ssh_host="192.168.15.15"
 
+[consul_boot]
+192.168.15.11 consul_role="boot"
+
+[consul_server]
+192.168.15.12 consul_role="server"
+192.168.15.13 consul_role="server"
+
+[docker]
+192.168.15.11

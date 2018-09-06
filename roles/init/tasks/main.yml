@@ -1,4 +1,9 @@
 ---
+# Use this role by root.
+
+#- name: "force add pubkey to localhost"
+#  shell: cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+#  ignore_errors: True
 
 - name: "check if rsa"
   stat: path=/root/.ssh/{{ item.src }} 
@@ -7,6 +12,13 @@
     - { src: id_rsa }
   register: rsa
   delegate_to: localhost
+  ignore_errors: True
+
+- name: "install sshpass by apt"
+  apt:
+    name: sshpass
+    state: present
+  when: ansible_os_family == 'Debian'
   ignore_errors: True
 
 - name: "create rsa"

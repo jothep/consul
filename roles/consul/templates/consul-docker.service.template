@@ -1,0 +1,30 @@
+[Unit]
+Description=consul by docker
+Wants=docker.socket
+After=docker.service
+
+[Service]
+User=root
+PermissionsStartOnly=true
+ExecStart=/usr/bin/docker run  \
+				-p "8300:8300" \
+				-p "8301:8301" \
+				-p "8301:8301/udp" \
+				-p "8302:8302" \
+				-p "8302:8302/udp" \
+				-p "8400:8400" \
+				-p "8500:8500" \
+                            	-v /opt/consul:/opt/consul \
+				-v /etc/consul.d:/etc/consul.d \
+                              --name consul-docker \
+                              --net=host \
+                              consul \
+				/etc/consul.d/start.sh
+ExecStartPre=-/usr/bin/docker rm -f consul-docker
+ExecStop=/usr/bin/docker stop consul-docker
+Restart=always
+RestartSec=15s
+TimeoutStartSec=30s
+
+[Install]
+WantedBy=multi-user.target

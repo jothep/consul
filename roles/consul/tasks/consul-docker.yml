@@ -1,0 +1,13 @@
+---
+
+- name: "Install consul-docker service"
+  template:
+    src: consul-docker.service.template
+    dest: /etc/systemd/system/consul-docker.service
+
+- name: "Start consul service"
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: consul-docker
+    enabled: yes

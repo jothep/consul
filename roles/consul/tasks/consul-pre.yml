@@ -1,0 +1,45 @@
+---
+
+- name: "make dir "
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /opt/consul
+    - /etc/consul.d
+  become: true
+  become_method: sudo
+
+- name: "set boot.json"
+  template:
+    src: boot.json.template
+    dest: /etc/consul.d/boot.json
+  become: true
+  become_method: sudo
+
+- name: "set boot start.sh"
+  template:
+    src: start-boot.sh.template
+    dest: /etc/consul.d/start.sh
+    mode: 0755
+  become: true
+  become_method: sudo
+  when: consul_role == "boot"
+
+- name: "set server start.sh"
+  template:
+    src: start-server.sh.template
+    dest: /etc/consul.d/start.sh
+    mode: 0755
+  become: true
+  become_method: sudo
+  when: consul_role == "server"
+
+- name: "set agent start.sh"
+  template:
+    src: start-agent.sh.template
+    dest: /etc/consul.d/start.sh
+    mode: 0755
+  become: true
+  become_method: sudo
+  when: consul_role == "agent"
