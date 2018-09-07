@@ -16,6 +16,7 @@ ExecStart=/usr/bin/docker run  \
 				-p "8500:8500" \
                             	-v /opt/consul:/opt/consul \
 				-v /etc/consul.d:/etc/consul.d \
+				-e CONSUL_BIND_INTERFACE=eth1 \
                               --name consul-docker \
                               --net=host \
                               consul \
