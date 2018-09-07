@@ -1,0 +1,4 @@
+{
+"encrypt": "{{ consul_encrypt }}"
+}
+

@@ -17,6 +17,13 @@
   become: true
   become_method: sudo
 
+#- name: "set encrypt.json"
+#  template:
+#    src: encrypt.json.template
+#    dest: /etc/consul.d/encrypt.json
+#  become: true
+#  become_method: sudo
+
 - name: "set boot start.sh"
   template:
     src: start-boot.sh.template
