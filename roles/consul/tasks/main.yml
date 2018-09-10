@@ -1,5 +1,7 @@
 ---
 
-- include_tasks: consul-pre.yml
+#- include_tasks: consul-pre.yml
 
-- include_tasks: consul-docker.yml
+#- include_tasks: consul-docker.yml
+
+- include_tasks: consul-direct.yml

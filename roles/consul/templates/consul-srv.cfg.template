@@ -1,1 +1,1 @@
-OPTIONS='-server -rejoin -data-dir /etc/consul -bind={{ ansible_default_ipv4.address }} -client=0.0.0.0'
+OPTIONS='-server -rejoin {%for r in consul_servers %}-retry-join {{r}} {%endfor%} -bind={{ ansible_eth1.ipv4.address }} -client=0.0.0.0 -node={{ ansible_hostname }}'

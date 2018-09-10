@@ -1,4 +1,21 @@
 ---
+- name: "make dir "
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /opt/consul
+    - /etc/consul.d
+    - /etc/sysconfig
+  become: true
+  become_method: sudo
+
+- name: "set boot.json"
+  template:
+    src: boot.json.template
+    dest: /etc/consul.d/boot.json
+  become: true
+  become_method: sudo
 
 - name: "copy consul bin file"
   copy: 
@@ -6,19 +23,32 @@
     dest: /usr/local/bin/consul
     mode: 0755
 
+- name: "set cfg for boot"
+  template:
+    src: consul-boot.cfg.template
+    dest: /etc/sysconfig/consul.cfg
+  when: consul_role=="boot"
+
+- name: "set cfg for server"
+  template:
+    src: consul-srv.cfg.template
+    dest: /etc/sysconfig/consul.cfg
+  when: consul_role=="server"
+
+- name: "set cfg for agent"
+  template:
+    src: consul-agt.cfg.template
+    dest: /etc/sysconfig/consul.cfg
+  when: consul_role=="agent"
+
 - name: "set systemd service file"
   template:
     src: consul.service.template
     dest: /etc/systemd/system/consul.service
 
-- name: "mkdir /etc/sysconfig"
-  file:
-    path: /etc/sysconfig
-    state: directory
-
 - name: "start consul service"
   systemd:
-    state: started
+    state: restarted
     daemon_reload: yes
     name: consul
     enabled: yes
