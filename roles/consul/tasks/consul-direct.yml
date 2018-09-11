@@ -3,6 +3,8 @@
   file:
     path: "{{ item }}"
     state: directory
+    owner: vagrant
+    group: vagrant
   with_items:
     - /opt/consul
     - /etc/consul.d
@@ -14,8 +16,6 @@
   template:
     src: boot.json.template
     dest: /etc/consul.d/boot.json
-  become: true
-  become_method: sudo
 
 - name: "copy consul bin file"
   copy: 
@@ -53,4 +53,4 @@
     name: consul
     enabled: yes
   become: true
-  become_mode: sudo
+  become_method: sudo
