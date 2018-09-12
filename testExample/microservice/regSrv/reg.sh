@@ -1,0 +1,2 @@
+curl -X PUT -d '{"name": "webtest", "address": "192.168.15.11", "port": 8088, "check": {"http": "http://192.168.15.11:8088/webtest", "interval": "10s"}}' http://192.168.15.11:8500/v1/agent/service/register
+curl -X PUT -d '{"name": "webtest", "address": "192.168.15.12", "port": 8088, "check": {"http": "http://192.168.15.12:8088/webtest", "interval": "10s"}}' http://192.168.15.12:8500/v1/agent/service/register

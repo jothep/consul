@@ -1,0 +1,14 @@
+{
+    "service": {
+        "name": "webtest", 
+        "address": "192.168.15.12", 
+        "tags": [
+            "rails"
+        ], 
+        "port": 8088, 
+        "check": {
+            "http": "http://192.168.15.12:8088/webtest", 
+            "interval": "10s"
+        }
+    }
+}

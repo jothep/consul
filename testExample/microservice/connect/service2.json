@@ -1,0 +1,14 @@
+{
+    "service": {
+      "name": "service2",
+      "port": 8082,
+	"Check": {
+	"HTTP": "http://192.168.15.12:8082/test2",
+	"Interval": "10s"
+	},
+      "connect": {
+        "proxy": {
+        }
+      }
+    }
+  }
