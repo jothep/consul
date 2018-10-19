@@ -1,0 +1,24 @@
+- name: install docker
+  hosts:
+    - all
+  roles:
+    - docker-c7
+
+- name: install etcd
+  hosts:
+    - etcd
+  vars:
+    etcd_data_dir: /var/lib/etcd/default.etcd
+    if_etcd_refresh: 'no'   
+  roles:
+    - etcd-c7
+
+- name: install flannel on centos7
+  hosts:
+    - flannel
+  gather_facts: yes
+  vars:
+    flannel_etcd_prefix: '/coreos.com/network'
+    etcd_ep: 'http://192.168.16.11:2379'
+  roles:
+    - flannel-c7

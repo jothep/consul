@@ -1,0 +1,4 @@
+---
+# handlers for etcd
+- name: start etcd
+  systemd: name=etcd state=started daemon_reload=yes enabled=yes

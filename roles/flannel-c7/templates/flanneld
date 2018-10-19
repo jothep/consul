@@ -1,0 +1,4 @@
+# Flanneld configuration options
+
+FLANNEL_ETCD_PREFIX="{{ flannel_etcd_prefix }}"
+FLANNEL_ETCD_ENDPOINTS="{{ etcd_ep }}"
